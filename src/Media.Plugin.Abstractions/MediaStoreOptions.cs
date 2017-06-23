@@ -249,15 +249,15 @@ namespace Plugin.Media.Abstractions
     public enum PhotoSize
     {
         /// <summary>
-        /// 25% of original
+        /// Maximium of 320 x 240.
         /// </summary>
         Small,
         /// <summary>
-        /// 50% of the original
+        /// Maximum of 1024 x 768.
         /// </summary>
         Medium,
         /// <summary>
-        /// 75% of the original
+        /// Maximum of 1920 x 1080.
         /// </summary>
         Large,
         /// <summary>

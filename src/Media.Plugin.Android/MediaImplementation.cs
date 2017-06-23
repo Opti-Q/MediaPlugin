@@ -514,37 +514,29 @@ namespace Plugin.Media
                         if (rotation == 0 && mediaOptions.PhotoSize == PhotoSize.Full && mediaOptions.CompressionQuality == 100)
                             return false;
 
-                        var percent = 1.0f;
+	                    var finalWidth = options.OutWidth;
+	                    var finalHeight = options.OutHeight;
+	                    var percent = 1f;
                         switch (mediaOptions.PhotoSize)
                         {
                             case PhotoSize.Large:
-                                percent = .75f;
+	                            percent = Math.Min(1920f / finalWidth, 1080f / finalHeight);
                                 break;
                             case PhotoSize.Medium:
-                                percent = .5f;
+	                            percent = Math.Min(1024f / finalWidth, 768f / finalHeight);
                                 break;
                             case PhotoSize.Small:
-                                percent = .25f;
+	                            percent = Math.Min(320f / finalWidth, 240f / finalHeight);
                                 break;
                             case PhotoSize.Custom:
-                                percent = (float)mediaOptions.CustomPhotoSize / 100f;
-                                break;
-                        }
+                                percent = customPhotoSize / 100f;
+								break;
+						}
+						finalWidth = (int)Math.Round(finalWidth * percent);
+	                    finalHeight = (int)Math.Round(finalHeight * percent);
 
-                        if (mediaOptions.PhotoSize == PhotoSize.MaxWidthHeight && mediaOptions.MaxWidthHeight.HasValue)
-                        {
-                            var max = Math.Max(options.OutWidth, options.OutHeight);
-                            if (max > mediaOptions.MaxWidthHeight)
-                            {
-                                percent = (float)mediaOptions.MaxWidthHeight / (float)max;
-                            }
-                        }
-
-                        var finalWidth = (int)(options.OutWidth * percent);
-                        var finalHeight = (int)(options.OutHeight * percent);
-
-                        //calculate sample size
-                        options.InSampleSize = CalculateInSampleSize(options, finalWidth, finalHeight);
+						//calculate sample size
+						options.InSampleSize = CalculateInSampleSize(options, finalWidth, finalHeight);
                         
                         //turn off decode
                         options.InJustDecodeBounds = false;

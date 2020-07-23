@@ -37,6 +37,8 @@ namespace Plugin.Media.Abstractions
             }
         }
 
+        public CameraFlashMode CameraFlashMode { get; set; }
+
         /// <summary>
         /// Path to file
         /// </summary>

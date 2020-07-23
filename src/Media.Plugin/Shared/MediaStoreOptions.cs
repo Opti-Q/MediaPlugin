@@ -69,6 +69,8 @@ namespace Plugin.Media.Abstractions
 		OverFullScreen
 	}
 
+    public enum CameraFlashMode { Auto = 0, Off, On }
+
     /// <summary>
     /// 
     /// </summary>
@@ -294,7 +296,9 @@ namespace Plugin.Media.Abstractions
 	    /// Defaults to FullScreen, which is the equivalent of using UIKit.UIModalPresentationStyle.FullScreen.
 	    /// </summary>
 	    public MediaPickerModalPresentationStyle ModalPresentationStyle { get; set; } = MediaPickerModalPresentationStyle.FullScreen;
-	}
+
+        public CameraFlashMode CameraFlashMode { get; set; }
+    }
 
     /// <summary>
     /// Photo size enum.

@@ -58,6 +58,7 @@ namespace Plugin.Media
         /// <inheritdoc/>
         public bool IsPickVideoSupported => true;
 
+        public CameraFlashMode CameraFlashMode { get; set; }
 
         bool IsValidExif(ExifInterface exif)
         {

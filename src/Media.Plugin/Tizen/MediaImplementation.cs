@@ -65,9 +65,10 @@ namespace Plugin.Media
 		public bool IsTakeVideoSupported { get; }
 		/// <inheritdoc/>
 		public bool IsPickVideoSupported { get; }
-
-		/// <inheritdoc/>
-		public Task<bool> Initialize() => Task.FromResult(true);
+        public Abstractions.CameraFlashMode CameraFlashMode { get; set; }
+      
+        /// <inheritdoc/>
+        public Task<bool> Initialize() => Task.FromResult(true);
 
 		/// <summary>
 		/// Take a photo async with specified options

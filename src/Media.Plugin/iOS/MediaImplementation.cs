@@ -62,13 +62,14 @@ namespace Plugin.Media
 
 		/// <inheritdoc/>
 		public bool IsPickVideoSupported { get; }
+        public CameraFlashMode CameraFlashMode { get; set; }
 
 
-		/// <summary>
-		/// Picks a photo from the default gallery
-		/// </summary>
-		/// <returns>Media file or null if canceled</returns>
-		public async Task<MediaFile> PickPhotoAsync(PickMediaOptions options = null, CancellationToken token = default(CancellationToken))
+        /// <summary>
+        /// Picks a photo from the default gallery
+        /// </summary>
+        /// <returns>Media file or null if canceled</returns>
+        public async Task<MediaFile> PickPhotoAsync(PickMediaOptions options = null, CancellationToken token = default(CancellationToken))
 		{
 			if (!IsPickPhotoSupported)
 				throw new NotSupportedException();
@@ -151,8 +152,12 @@ namespace Plugin.Media
 
 			await CheckPermissions(permissionsToCheck.ToArray());
 
-			return await GetMediaAsync(UIImagePickerControllerSourceType.Camera, TypeImage, options, token);
-		}
+            var media = await GetMediaAsync(UIImagePickerControllerSourceType.Camera, TypeImage, options, token);
+
+            CameraFlashMode = media.CameraFlashMode;
+
+            return media;
+        }
 
 
 		/// <summary>
@@ -246,6 +251,7 @@ namespace Plugin.Media
 			{
 				picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
 				picker.AllowsEditing = options?.AllowCropping ?? false;
+                picker.CameraFlashMode = options.CameraFlashMode.ConvertToNative();
 
 				if (options.OverlayViewProvider != null)
 				{
@@ -331,8 +337,15 @@ namespace Plugin.Media
 			{
 				Dismiss(popover, picker);
 
-				return t.Result == null ? null : t.Result.FirstOrDefault();
-			});
+                if (t.Result == null)
+                    return null;
+
+                if (!(t.Result.FirstOrDefault() is { } result)) return null;
+
+                result.CameraFlashMode = picker.CameraFlashMode.ConvertToShared();
+                return result;
+
+            });
 		}
 
 		Task<List<MediaFile>> GetMediasAsync(UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null, MultiPickerOptions pickerOptions = null, CancellationToken token = default(CancellationToken))

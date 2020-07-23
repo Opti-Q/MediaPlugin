@@ -73,5 +73,10 @@ namespace Plugin.Media.Abstractions
 		/// <returns>Media file of new video or null if canceled</returns>
 		Task<MediaFile> TakeVideoAsync(StoreVideoOptions options, CancellationToken token = default(CancellationToken));
 
-	}
+        /// <summary>
+        /// This is only implemented for iOS for now. Returns always "Auto" for UWP and Android
+        /// </summary>
+        public CameraFlashMode CameraFlashMode { get; set; }
+
+    }
 }

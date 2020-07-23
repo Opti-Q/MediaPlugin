@@ -91,6 +91,8 @@ namespace Plugin.Media
         /// <inheritdoc/>
         public bool IsPickVideoSupported => true;
 
+        public CameraFlashMode CameraFlashMode { get; set; }
+
         /// <summary>
         /// Take a photo async with specified options
         /// </summary>

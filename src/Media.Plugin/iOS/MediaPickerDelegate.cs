@@ -56,6 +56,7 @@ namespace Plugin.Media
 			{
 				case MediaImplementation.TypeImage:
 					mediaFile = await GetPictureMediaFile(info);
+                    mediaFile.CameraFlashMode = picker.CameraFlashMode.ConvertToShared();
 					break;
 
 				case MediaImplementation.TypeMovie:

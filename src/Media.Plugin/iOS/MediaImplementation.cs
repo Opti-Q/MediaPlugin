@@ -333,20 +333,15 @@ namespace Plugin.Media
 				});
 			}
 
-			return ndelegate.Task.ContinueWith(t =>
-			{
-				Dismiss(popover, picker);
-
-                if (t.Result == null)
-                    return null;
-
-                if (!(t.Result.FirstOrDefault() is { } result)) return null;
-
-                result.CameraFlashMode = picker.CameraFlashMode.ConvertToShared();
-                return result;
-
+            return ndelegate.Task.ContinueWith(t =>
+            {
+                Dismiss(popover, picker);
+                if (t.Result is null) return null;
+                var firstResult = t.Result.FirstOrDefault();
+                if (firstResult is {} notNull) CameraFlashMode = notNull.CameraFlashMode;
+                return firstResult;
             });
-		}
+        }
 
 		Task<List<MediaFile>> GetMediasAsync(UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null, MultiPickerOptions pickerOptions = null, CancellationToken token = default(CancellationToken))
 		{

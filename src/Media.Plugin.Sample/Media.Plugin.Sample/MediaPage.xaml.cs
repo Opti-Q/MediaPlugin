@@ -38,7 +38,8 @@ namespace Media.Plugin.Sample
 				{
 					PhotoSize = PhotoSize.Medium,
 					Directory = "Sample",
-					Name = "test.jpg"
+					Name = "test.jpg",
+                    CameraFlashMode = CameraFlashMode.On
 				});
 
 				if (file == null)

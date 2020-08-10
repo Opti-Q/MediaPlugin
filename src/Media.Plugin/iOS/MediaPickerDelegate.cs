@@ -55,9 +55,9 @@ namespace Plugin.Media
 			switch ((NSString)info[UIImagePickerController.MediaType])
 			{
 				case MediaImplementation.TypeImage:
-					mediaFile = await GetPictureMediaFile(info);
-                    mediaFile.CameraFlashMode = picker.CameraFlashMode.ConvertToShared();
-					break;
+                    mediaFile = await GetPictureMediaFile(info);
+                    if (IsCaptured) mediaFile.CameraFlashMode = picker.CameraFlashMode.ConvertToShared();
+                    break;
 
 				case MediaImplementation.TypeMovie:
 					mediaFile = await GetMovieMediaFile(info);

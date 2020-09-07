@@ -154,7 +154,7 @@ namespace Plugin.Media
 
             var media = await GetMediaAsync(UIImagePickerControllerSourceType.Camera, TypeImage, options, token);
 
-            CameraFlashMode = media.CameraFlashMode;
+            if (media is {}) CameraFlashMode = media.CameraFlashMode;
 
             return media;
         }
@@ -340,7 +340,7 @@ namespace Plugin.Media
                 var firstResult = t.Result.FirstOrDefault();
                 if (firstResult is {} notNull) CameraFlashMode = notNull.CameraFlashMode;
                 return firstResult;
-            });
+            }, token);
         }
 
 		Task<List<MediaFile>> GetMediasAsync(UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null, MultiPickerOptions pickerOptions = null, CancellationToken token = default(CancellationToken))

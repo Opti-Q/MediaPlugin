@@ -200,8 +200,12 @@ namespace Plugin.Media
         {
             try
             {
-                if (IsValidPathName(directory))
+                if (!string.IsNullOrWhiteSpace(directory))
+                {
+                    if (!IsValidFileName(directory))
+                        directory = string.Join("", directory.Split(Path.GetInvalidFileNameChars()));
                     folder = await folder.CreateFolderAsync(directory, CreationCollisionOption.GenerateUniqueName);
+                }
                 var destinationFile = await folder.CreateFileAsync(IsValidFileName(name) ? EnsureCorrectExtension(name, file.FileType) : file.Name, CreationCollisionOption.GenerateUniqueName);
                 using var sourceStream = await file.OpenReadAsync();
                 using var sourceInputStream = sourceStream.GetInputStreamAt(0);
@@ -212,7 +216,7 @@ namespace Plugin.Media
             catch (UnauthorizedAccessException)
             {
 #if DEBUG
-                Debug.WriteLine("UnauthorizedAccessException: You have to give the permission to acces Pictures Library!");
+                Debug.WriteLine("UnauthorizedAccessException: You have to give the permission to access Pictures Library!");
 #endif
             }
         }
@@ -440,8 +444,6 @@ namespace Plugin.Media
                 if (photoSize == PhotoSize.Full)
                     return Task.FromResult(false);
 
-				var customPhotoSize = mediaOptions.CustomPhotoSize;
-				var quality = mediaOptions.CompressionQuality;
                 return Task.Run(async () =>
                 {
                     try
@@ -459,7 +461,7 @@ namespace Plugin.Media
                                 percent = .25f;
                                 break;
                             case PhotoSize.Custom:
-                                percent = customPhotoSize / 100f;
+                                percent = mediaOptions.CustomPhotoSize / 100f;
                                 break;
                         }
 
@@ -469,7 +471,7 @@ namespace Plugin.Media
 
                         using var bitmap = await decoder.GetSoftwareBitmapAsync();
 
-                        if (mediaOptions.PhotoSize == PhotoSize.MaxWidthHeight && mediaOptions.MaxWidthHeight.HasValue)
+                        if (photoSize == PhotoSize.MaxWidthHeight && mediaOptions.MaxWidthHeight.HasValue)
                         {
                             var max = Math.Max(bitmap.PixelWidth, bitmap.PixelHeight);
                             if (max > mediaOptions.MaxWidthHeight)
@@ -480,6 +482,10 @@ namespace Plugin.Media
 
                         var finalWidth = Convert.ToUInt32(bitmap.PixelWidth * percent);
                         var finalHeight = Convert.ToUInt32(bitmap.PixelHeight * percent);
+
+                        var folder = await file.GetParentAsync();
+                        await file.DeleteAsync();
+                        file = await folder.CreateFileAsync(file.Name);
 
                         using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite))
                         {
